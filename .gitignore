@@ -1,3 +1,5 @@
 # .gitignore
 node_modules
 .DS_Store
+pos.db
+*.db-journal
