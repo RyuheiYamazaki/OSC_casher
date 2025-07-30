@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCS レジシステム</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>OCS レジシステム</h1>
+            <nav>
+                <button id="show-register" class="nav-btn active">レジ</button>
+                <button id="show-history" class="nav-btn">履歴</button>
+                <button id="show-settings" class="nav-btn">設定</button>
+            </nav>
+        </header>
+        <main>
+            <section id="register-section">
+                <div class="register-layout">
+                    <div class="product-list-container">
+                        </div>
+                    <div class="cart-container">
+                        <div class="cart-title">カート</div>
+                        <div class="cart">
+                            </div>
+                        <div class="total">
+                            <span>合計金額</span>
+                            <span id="total-price">¥0</span>
+                        </div>
+                        <button class="confirm-btn">確定</button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="history-section" class="hidden">
+                <div class="history-controls">
+                    <h3>購入履歴</h3>
+                    <button id="delete-all-history-btn" class="delete-btn">全件削除</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr><th>購入時刻</th><th>金額</th><th>内訳</th><th>操作</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"><strong>合計売上</strong></td>
+                            <td id="total-sales-amount"><strong>¥0</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+
+            <section id="settings-section" class="hidden">
+                <h3>商品リスト</h3>
+                <table>
+                    <thead>
+                        <tr><th>商品名</th><th>金額</th><th>在庫数</th><th>操作</th></tr>
+                    </thead>
+                    <tbody id="settings-product-list"></tbody>
+                </table>
+                <hr>
+                <h3>新しい商品を追加</h3>
+                <form id="add-product-form">
+                    <input type="text" id="new-product-name" placeholder="商品名" required>
+                    <input type="number" id="new-product-price" placeholder="金額" required>
+                    <input type="number" id="new-product-inventory" placeholder="在庫数" required>
+                    <button type="submit">追加</button>
+                </form>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+
+    <footer>
+        <p>
+            つくったひと: <a href="https://x.com/buki_alek" target="_blank" rel="noopener noreferrer">@buki_alek</a> 
+        </p>
+    </footer>
+</body>
+</html>
