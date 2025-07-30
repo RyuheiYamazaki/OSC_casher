@@ -65,7 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- API通信 & ページごとの処理 ---
     async function initRegisterPage() {
         try {
-            const response = await fetch('http://localhost:3000/api/products');
+            const response = await fetch('/api/products');
+            if (!response.ok) throw new Error('サーバーからの応答がありません');
             products = await response.json();
             renderProducts(); renderCart();
         } catch (error) { console.error('商品データの取得に失敗:', error); }
@@ -77,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             details: JSON.stringify(cart.map(item => ({ id: item.id, name: item.name, quantity: item.quantity })))
         };
         try {
-            const response = await fetch('http://localhost:3000/api/sales', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(saleData) });
+            const response = await fetch('/api/sales', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(saleData) });
             const result = await response.json();
             if (!response.ok) throw new Error(result.error);
             alert('ありがとうございました！');
@@ -87,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     async function displayHistoryPage() {
         try {
-            const response = await fetch('http://localhost:3000/api/sales');
+            const response = await fetch('/api/sales');
+            if (!response.ok) throw new Error('サーバーからの応答がありません');
             const sales = await response.json();
             const totalSalesAmountSpan = document.getElementById('total-sales-amount');
             historyTableBody.innerHTML = '';
@@ -104,7 +106,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     async function displaySettingsPage() {
         try {
-            const response = await fetch('http://localhost:3000/api/products');
+            const response = await fetch('/api/products');
+            if (!response.ok) throw new Error('サーバーからの応答がありません');
             const products = await response.json();
             settingsProductList.innerHTML = '';
             products.forEach(p => {
@@ -132,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const price = document.getElementById('new-product-price').value;
         const inventory = document.getElementById('new-product-inventory').value;
         try {
-            await fetch('http://localhost:3000/api/products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, price, inventory }) });
+            await fetch('/api/products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, price, inventory }) });
             addProductForm.reset();
             displaySettingsPage();
         } catch (error) { console.error('商品追加エラー:', error); }
@@ -145,21 +148,20 @@ document.addEventListener('DOMContentLoaded', () => {
             const name = row.querySelector('.name-input').value;
             const price = row.querySelector('.price-input').value;
             const inventory = row.querySelector('.inventory-input').value;
-            await fetch(`http://localhost:3000/api/products/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, price, inventory }) });
+            await fetch(`/api/products/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, price, inventory }) });
             alert('保存しました。');
         }
         if (e.target.classList.contains('delete-btn')) {
             if (confirm('本当にこの商品を削除しますか？')) {
-                await fetch(`http://localhost:3000/api/products/${id}`, { method: 'DELETE' });
+                await fetch(`/api/products/${id}`, { method: 'DELETE' });
                 displaySettingsPage();
             }
         }
     });
-    // 【ここが履歴削除のイベントリスナーです】
     historySection.addEventListener('click', async e => {
         if (e.target.id === 'delete-all-history-btn') {
             if (confirm('本当に全ての購入履歴を削除しますか？\nこの操作は元に戻せません。')) {
-                await fetch('http://localhost:3000/api/sales', { method: 'DELETE' });
+                await fetch('/api/sales', { method: 'DELETE' });
                 displayHistoryPage();
             }
         }
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = e.target.closest('tr');
             const id = row.dataset.id;
             if (confirm('この会計履歴を削除しますか？')) {
-                await fetch(`http://localhost:3000/api/sales/${id}`, { method: 'DELETE' });
+                await fetch(`/api/sales/${id}`, { method: 'DELETE' });
                 displayHistoryPage();
             }
         }

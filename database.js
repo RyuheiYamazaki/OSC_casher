@@ -23,7 +23,6 @@ db.serialize(() => {
             db.close(); // エラー時もDBを閉じる
             return;
         }
-
         if (row.count === 0) {
             console.log('商品テーブルに初期データを投入します...');
             const products = [
@@ -39,7 +38,6 @@ db.serialize(() => {
             stmt.finalize();
         }
         
-        // ★★★ すべての処理が終わったここでデータベースを閉じる ★★★
         db.close((err) => {
             if (err) {
                 return console.error(err.message);

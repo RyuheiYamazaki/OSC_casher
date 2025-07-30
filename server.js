@@ -1,28 +1,20 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
-const path = require('path'); // pathモジュールをインポート
+const path = require('path');
 
 const app = express();
 const PORT = 3000;
 
-// ミドルウェアの設定
 app.use(cors());
 app.use(express.json());
-
-// ★★★ この一行を追加 ★★★
-// 静的ファイル（HTML, CSS, JS）を提供するための設定
 app.use(express.static(path.join(__dirname, '/')));
 
-/*
-// 古いテスト用のルートは不要なので削除またはコメントアウトします
-app.get('/', (req, res) => {
-    res.send('レジシステムのバックエンドへようこそ！');
+const db = new sqlite3.Database('./pos.db', (err) => {
+    if (err) {
+        console.error("データベース接続エラー:", err.message);
+    }
 });
-*/
-
-// --- APIエンドポイント ---
-// (ここから下のAPI関連のコードは変更ありません)
 
 // API: 全ての商品を取得する
 app.get('/api/products', (req, res) => {
@@ -31,7 +23,6 @@ app.get('/api/products', (req, res) => {
         res.json(rows);
     });
 });
-
 // API: 商品を追加する
 app.post('/api/products', (req, res) => {
     const { name, price, inventory } = req.body;
@@ -40,7 +31,6 @@ app.post('/api/products', (req, res) => {
         res.json({ id: this.lastID });
     });
 });
-
 // API: 商品を更新する
 app.put('/api/products/:id', (req, res) => {
     const { name, price, inventory } = req.body;
@@ -52,7 +42,6 @@ app.put('/api/products/:id', (req, res) => {
         }
     );
 });
-
 // API: 商品を削除する
 app.delete('/api/products/:id', (req, res) => {
     db.run(`DELETE FROM products WHERE id = ?`, req.params.id, function(err) {
@@ -60,7 +49,6 @@ app.delete('/api/products/:id', (req, res) => {
         res.json({ changes: this.changes });
     });
 });
-
 // API: 全ての売上履歴を取得する
 app.get('/api/sales', (req, res) => {
     db.all("SELECT * FROM sales ORDER BY id DESC", [], (err, rows) => {
@@ -68,7 +56,6 @@ app.get('/api/sales', (req, res) => {
         res.json(rows);
     });
 });
-
 // API: 売上を保存する
 app.post('/api/sales', (req, res) => {
     const { totalPrice, details } = req.body;
@@ -97,7 +84,6 @@ app.post('/api/sales', (req, res) => {
             });
     });
 });
-
 // API: 特定の売上履歴を削除する
 app.delete('/api/sales/:id', (req, res) => {
     db.run(`DELETE FROM sales WHERE id = ?`, req.params.id, function(err) {
@@ -105,7 +91,6 @@ app.delete('/api/sales/:id', (req, res) => {
         res.json({ message: '履歴を削除しました。', changes: this.changes });
     });
 });
-
 // API: 全ての売上履歴を削除する
 app.delete('/api/sales', (req, res) => {
     db.run(`DELETE FROM sales`, function(err) {
@@ -113,7 +98,6 @@ app.delete('/api/sales', (req, res) => {
         res.json({ message: '全ての履歴を削除しました。' });
     });
 });
-
 // サーバーの起動
 app.listen(PORT, () => {
     console.log(`サーバーが http://localhost:${PORT} で起動しました`);
